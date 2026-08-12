@@ -1,0 +1,12 @@
+{
+  "name": "مقابلات الأطباء",
+  "short_name": "مقابلات الأطباء",
+  "description": "نموذج تفاعلي لإجراء مقابلات الأطباء وتسجيل الإجابات",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8fc",
+  "theme_color": "#2563eb"
+}
