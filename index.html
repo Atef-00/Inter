@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<title>مقابلات الأطباء | نموذج تفاعلي</title>
+<style>
+:root{--bg:#f6f8fc;--surface:#fff;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--brand:#2563eb;--brand2:#0ea5e9;--ok:#059669;--warn:#d97706;--danger:#dc2626}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:linear-gradient(180deg,#edf4ff 0,#f6f8fc 340px);color:var(--ink);font-family:Tahoma,Arial,"Noto Sans Arabic",sans-serif}
+button,input,textarea{font:inherit} button{cursor:pointer} .shell{max-width:1100px;margin:auto;padding:0 18px 40px}
+.hero{max-width:1100px;margin:auto;padding:38px 18px 24px;display:flex;justify-content:space-between;gap:20px;align-items:flex-end} h1{margin:0;font-size:clamp(27px,5vw,46px)} .lead{color:var(--muted);line-height:1.9;margin:9px 0 0;max-width:720px}
+.badge{background:#eaf2ff;color:#1d4ed8;padding:8px 12px;border-radius:999px;font-weight:700;font-size:13px;white-space:nowrap}
+.panel,.question-card,.summary-card,.saved-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 30px rgba(15,23,42,.05)} .panel{padding:22px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} label{display:block;font-weight:800;margin-bottom:7px} input,textarea{width:100%;border:1px solid var(--line);background:#fbfdff;border-radius:13px;padding:14px;outline:none} input:focus,textarea:focus{border-color:#93b4ff;box-shadow:0 0 0 4px rgba(37,99,235,.1)} textarea{min-height:145px;resize:vertical;line-height:1.9}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center} .btn{border:0;border-radius:13px;padding:12px 16px;font-weight:800} .primary{background:var(--brand);color:#fff} .secondary{background:#eef2f7;color:#263244} .danger{background:#fff1f2;color:#be123c} .success{background:#ecfdf5;color:#047857}
+.sticky{position:sticky;top:0;z-index:20;background:rgba(246,248,252,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:18px} .sticky-inner{max-width:1100px;margin:auto;padding:0 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.progress-wrap{flex:1;min-width:210px} .progress-text{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px} .progress{height:9px;border-radius:999px;background:#e7edf6;overflow:hidden} .bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0;transition:.25s}
+.tabs{display:flex;gap:8px;flex-wrap:wrap} .tab{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 13px;font-weight:800} .tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.section-title{margin:28px 0 14px;font-size:18px} .question-card{padding:22px;margin-bottom:14px;scroll-margin-top:92px} .q-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start} .section-chip{display:inline-block;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800} .qnum{color:var(--brand);font-weight:900} h2{font-size:20px;line-height:1.8;margin:10px 0 16px}
+.status{font-size:12px;font-weight:800;padding:6px 9px;border-radius:999px;background:#f1f5f9;color:#64748b} .status.done{background:#ecfdf5;color:#047857}
+.voice{margin-top:12px;padding:12px;border:1px dashed #cbd5e1;border-radius:15px;background:#f8fbff} .voice-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap} .mic{background:var(--ok);color:#fff} .mic.live{background:var(--danger);animation:pulse 1s infinite} .voice-status{font-weight:800;font-size:13px;color:#475569} @keyframes pulse{50%{transform:scale(1.02);opacity:.82}}
+.review{margin-top:28px} .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .summary-card{padding:18px} .big{font-size:28px;font-weight:900;color:var(--brand)} .muted{color:var(--muted);line-height:1.8} .saved-list{display:grid;gap:10px;margin-top:14px} .saved-card{padding:15px;display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:50} .overlay.show{display:flex} .modal{max-width:560px;width:100%;max-height:85vh;overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.2)} .modal h3{margin-top:0}
+.start-screen{max-width:780px;margin:45px auto} .start-card{padding:28px} .app{display:none} .app.show{display:block} .start-screen.hide{display:none}
+#part1{display:none} #part1.active{display:block} .hidden{display:none}
+@media(max-width:720px){.hero{align-items:flex-start;flex-direction:column}.grid,.summary-grid{grid-template-columns:1fr}.sticky-inner{align-items:stretch}.progress-wrap{width:100%}h2{font-size:18px}.question-card{padding:17px}}
+@media print{.hero,.start-screen,.sticky,.voice,.save-actions,.review-actions,.saved-area,.status,.tab{display:none!important}body{background:#fff}.shell{max-width:none;padding:0}.question-card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}textarea{border:0;background:#fff;padding:0;min-height:80px}#part0,#part1{display:block!important}}
+.system-banner{max-width:1100px;margin:0 auto 14px;padding:0 18px}
+.system-banner-inner{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:16px;padding:12px 14px;font-weight:700;line-height:1.7}
+.system-banner-inner.warn{border-color:#fed7aa;background:#fff7ed;color:#9a3412}
+.system-banner-inner.ok{border-color:#bbf7d0;background:#f0fdf4;color:#166534}
+.install-btn{margin-inline-start:8px}
+@media(max-width:720px){.system-banner{padding:0 12px}.btn{min-height:44px}.sticky{top:0}}
+
+/* ===== Interview Insights Analysis ===== */
+.analysis-page{display:none}
+.analysis-page.active{display:block}
+.analysis-hero{background:linear-gradient(135deg,#eff6ff,#f8fbff);border:1px solid #bfdbfe;border-radius:20px;padding:22px;margin-bottom:16px}
+.analysis-hero h2{margin:0 0 8px}
+.analysis-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.insight-stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 22px rgba(15,23,42,.04)}
+.insight-stat .big{font-size:26px}
+.analysis-section{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}
+.analysis-section h3{margin:0 0 12px}
+.problem-list{display:grid;gap:12px}
+.problem-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fbfdff}
+.problem-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.problem-title{font-size:17px;font-weight:900;margin:0 0 5px}
+.problem-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eef2f7;color:#475569;font-size:12px;font-weight:800}
+.pill.high{background:#fee2e2;color:#991b1b}.pill.medium{background:#fef3c7;color:#92400e}.pill.low{background:#dcfce7;color:#166534}
+.problem-fields{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.problem-fields label{font-size:12px}
+.problem-fields input,.problem-fields select{width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px}
+.problem-card textarea{min-height:90px;margin-top:10px}
+.score-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:10px;text-align:center}
+.score-box b{font-size:22px;color:var(--brand)}
+.insight-table{width:100%;border-collapse:collapse;font-size:13px}
+.insight-table th,.insight-table td{padding:10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.insight-table th{background:#f8fafc;font-weight:900}
+.mini-bar{height:8px;background:#e7edf6;border-radius:999px;overflow:hidden;min-width:90px}
+.mini-bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.priority-list{display:grid;gap:10px}
+.priority-item{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px}
+.rank{width:34px;height:34px;border-radius:50%;background:#eff6ff;color:#1d4ed8;display:grid;place-items:center;font-weight:900}
+.priority-score{font-size:20px;font-weight:900;color:var(--brand)}
+.feature-map{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feature-card{border:1px solid var(--line);border-radius:15px;padding:14px}
+.feature-card h4{margin:0 0 7px}
+.tag{display:inline-block;margin:3px;padding:5px 8px;border-radius:8px;background:#f1f5f9;font-size:12px;font-weight:800}
+.empty-state{padding:22px;text-align:center;color:var(--muted);border:1px dashed #cbd5e1;border-radius:15px}
+.analysis-actions{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:900px){.analysis-grid{grid-template-columns:repeat(2,1fr)}.problem-fields{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.analysis-grid,.problem-fields,.feature-map{grid-template-columns:1fr}.priority-item{grid-template-columns:36px 1fr}.priority-score{grid-column:2}.insight-table{display:block;overflow:auto;white-space:nowrap}}
+
+</style>
+</head>
+<body>
+<header class="hero"><div><h1>مقابلات الأطباء</h1><p class="lead">نموذج احترافي لجمع إجابات الأطباء كتابةً أو بالصوت، مع حفظ النماذج ومراجعتها وتصديرها.</p></div><span class="badge">35 سؤالًا</span></header>
+
+<div class="system-banner" id="systemBanner" aria-live="polite"></div>
+<main class="shell">
+<section id="startScreen" class="start-screen"><div class="panel start-card"><h2>ابدأ مقابلة جديدة</h2><p class="muted">أدخل بيانات الطبيب أولًا، ثم ابدأ الإجابة على الأسئلة. كل إجابة تُحفظ تلقائيًا أثناء المقابلة، بينما المقابلات التي تحفظها بالاسم تظل متاحة من «النماذج المحفوظة».</p><div class="grid"><div><label>اسم الدكتور</label><input id="doctorName" placeholder="مثال: د. أحمد محمد"></div><div><label>التخصص</label><input id="specialty" placeholder="مثال: طب الأطفال"></div></div><div class="actions" style="margin-top:18px"><button class="btn primary" id="startBtn">ابدأ المقابلة ←</button><button class="btn secondary" id="openSavedStart">📁 النماذج المحفوظة</button></div></div></section>
+
+<div id="app" class="app">
+<div class="sticky"><div class="sticky-inner"><div class="progress-wrap"><div class="progress-text"><span id="answeredText">0 من 35</span><span id="percent">0%</span></div><div class="progress"><div class="bar" id="bar"></div></div></div><div class="tabs">
+<button class="tab active" data-page="0">القسم الأول (1–24)</button>
+<button class="tab" data-page="1">القسم الثاني</button>
+<button class="tab" data-page="2">📊 تحليل الـ Insights</button>
+<button class="btn secondary" id="saveQuick">💾 حفظ</button>
+<button class="btn secondary" id="savedBtn">📁 المحفوظات</button>
+</div></div></div>
+<div id="part0"></div><div id="part1"></div><div id="analysisPage"></div>
+
+<section class="review panel" id="review"><h2>ملخص المقابلة</h2><div class="summary-grid"><div class="summary-card"><div class="big" id="sumAnswered">0</div><div class="muted">إجابات مكتملة</div></div><div class="summary-card"><div class="big" id="sumMissing">0</div><div class="muted">أسئلة بدون إجابة</div></div><div class="summary-card"><div class="big" id="sumPercent">0%</div><div class="muted">نسبة الاكتمال</div></div></div><div class="actions review-actions" style="margin-top:18px"><button class="btn primary" id="saveBottom">💾 حفظ النموذج</button><button class="btn primary" id="submitOnlineBtn">☁️ إرسال النتيجة</button><button class="btn secondary" id="wordBtn">📄 Word</button><button class="btn secondary" id="pdfBtn">🖨️ PDF</button><button class="btn success" id="excelBtn">📊 Excel</button><button class="btn success" id="mergeExcelBtn">📚 دمج كل المحفوظات في Excel</button><button class="btn secondary" id="newBtn">➕ نموذج جديد</button></div></section>
+</div>
+</main>
+
+<div class="overlay" id="modal"><div class="modal"><div class="actions" style="justify-content:space-between"><h3 id="modalTitle">النماذج المحفوظة</h3><button class="btn secondary" id="closeModal">إغلاق</button></div><div id="modalBody"></div></div></div>
+
+<script>
+const questions=[{"section": "القسم العام — الروتين اليومي", "text": "صف لي يومك من أول ما تفتح العيادة لحد ما تقفلها — خطوة خطوة."}, {"section": "القسم العام — الروتين اليومي", "text": "ما أكثر جزء في يومك يأخذ وقتًا أكثر مما يجب؟"}, {"section": "القسم العام — الروتين اليومي", "text": "إيه آخر حاجة خلتك تتأخر في البيت أو تتعصب في الشغل؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "إزاي بتتعامل دلوقتي مع حجز المواعيد؟ مين اللي بيعمل ده؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "بتحصل منك مشاكل مع المرضى اللي مجاوش الموعد؟ بتعمل إيه في الوقت الفاضي؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "لو مريض أجيل أو كنسل موعده — بتعمل إيه؟ بتقدر تملاله بحد تاني بسرعة؟"}, {"section": "القسم العام — ملفات المرضى", "text": "لو محتاج معلومة عن مريض دلوقتي — بتلاقيها فين وفي كام دقيقة؟"}, {"section": "القسم العام — ملفات المرضى", "text": "لو مريض جه بعد 6 شهور من غيابه — بتراجع تاريخه إزاي؟"}, {"section": "القسم العام — ملفات المرضى", "text": "بتكتب ملاحظاتك على المريض إزاي؟ ورق؟ كمبيوتر؟ تليفون؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "هل تستخدم أي نظام لتذكير المرضى بمواعيدهم لتقليل نسبة التخلف عن الحضور؟"}, {"section": "القسم العام — المتابعة بعد الكشف", "text": "كيف تتعامل مع الاستشارات والمتابعات بعد الكشف؟"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتعمل الفواتير إزاي؟ بياخد منك قد إيه وقت في اليوم؟ (كيف تتابع حسابات العيادة اليومية والشهرية (الإيرادات، المصروفات، رواتب المساعدين)؟)"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتقبل المدفوعات إزاي؟ كاش بس ولا كارت أو فوري أو تحويل؟"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتعمل تقارير مالية؟ بتعرف إيرادات العيادة في نهاية الشهر إزاي؟"}, {"section": "القسم العام — الروشتات", "text": "كيف تتعامل مع الروشتات؟ هل تفضل كتابتها يدوياً أم طباعتها؟ وما هو الوقت المستغرق في كليهما؟"}, {"section": "القسم العام — الإحصائيات", "text": "هل لديك طريقة لمعرفة إحصائيات عيادتك (أكثر الحالات شيوعاً، نسبة حضور المرضى، أوقات الذروة)؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "هل جربت أي برنامج أو تطبيق لإدارة العيادة قبل كده؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "لو سبق وجربت نظام وعدت للطريقة القديمة — ليه بالظبط؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "لو نظام مثالي اتعمل النهارده — إيه أول حاجة كنت عايزها تتحل؟"}, {"section": "القسم العام — الموظفون والتنسيق", "text": "كام موظف معاك في العيادة؟ بيعملوا إيه بالظبط كل يوم؟"}, {"section": "القسم العام — الموظفون والتنسيق", "text": "بتنسق مع الموظفين إزاي؟ واتساب؟ شفهي؟ ورق؟"}, {"section": "القسم العام — سؤال الإغلاق", "text": "مين من زمايلك يعاني من نفس التحديات اللي اتكلمنا عنها؟ ممكن تعرفني عليه؟"}, {"section": "القسم العام — الانتقال إلى نظام جديد", "text": "هل تفضل تبدأ باستخدام جزء واحد من النظام، ولا تنقل كل شغل العيادة مرة واحدة؟ وليه؟"}, {"section": "القسم العام — الدفع والاشتراك", "text": "لو لقيت نظام فعلاً وفر عليك وقت وحل أهم المشاكل اللي عندك، إيه الطريقة اللي تفضل تدفع بيها: اشتراك شهري، سنوي، ولا حسب الاستخدام؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "مين اللي بيجيب الطفل للعيادة في الغالب؟ الأم؟ الأب؟ الاتنين؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "بتتواصل مع أهل المريض بعد الكشف إزاي لو احتجت تبعتلهم تعليمات؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "لو عندك إخوات في نفس الأسرة — بتتعامل مع ملفاتهم إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "إزاي بتتعامل مع جدول التطعيمات؟ بتتذكر مواعيد التطعيم لكل طفل إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "بتبعت تذكير للأهل بموعد التطعيم القادم؟ بتعمل ده إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "لو طفل جه بعد سنة — بتعرف إيه التطعيمات اللي أخدها وإيه اللي ناقص؟"}, {"section": "قسم أطباء الأطفال — منحنيات النمو والمتابعة", "text": "بتتابع وزن وطول الأطفال إزاي؟ بترسم منحنيات النمو؟"}, {"section": "قسم أطباء الأطفال — منحنيات النمو والمتابعة", "text": "بتتابع المعالم التطورية للطفل (حركة، كلام، إدراك)؟ بتوثقها إزاي؟"}, {"section": "قسم أطباء الأطفال — الأدوية وجرعات الأطفال", "text": "لما بتكتب وصفة للطفل — بتحسب الجرعة إزاي بالنسبة للوزن؟"}, {"section": "قسم أطباء الأطفال — الأدوية وجرعات الأطفال", "text": "بتكتب الوصفات يدوي ولا على كمبيوتر؟ هل الصيدلي بيفهمها دائمًا؟"}, {"section": "قسم أطباء الأطفال — السؤال الاستراتيجي", "text": "من تجربتك، إيه أكبر حاجة لو اتحلت هتخلي وقتك مع المريض أطول؟"}];
+const ACTIVE='doctorInterviewUIUXActiveV1', SAVED='doctorInterviewUIUXSavedV1', SPLIT=24;
+  const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycby0AiEj4FO9WAihGxRqmfdLz8vlsbjJ7mcgXf8x2JmgJUnFVCnc3njw52Y7Z260oTFN/exec';
+const $=id=>document.getElementById(id);
+let state={doctorName:'',specialty:'',answers:{}}, activePage=0;
+
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function load(){try{const x=JSON.parse(localStorage.getItem(ACTIVE));if(x&&x.answers)state=x;}catch(e){}}
+function persist(){state.doctorName=$('doctorName').value.trim();state.specialty=$('specialty').value.trim();localStorage.setItem(ACTIVE,JSON.stringify(state));updateStats();}
+function answeredCount(){return Object.values(state.answers).filter(v=>String(v).trim()).length}
+function updateStats(){const n=answeredCount(),p=Math.round(n/questions.length*100);$('answeredText').textContent=`${n} من ${questions.length} سؤال`; $('percent').textContent=p+'%';$('bar').style.width=p+'%';$('sumAnswered').textContent=n;$('sumMissing').textContent=questions.length-n;$('sumPercent').textContent=p+'%';}
+function card(q,i,display){const done=String(state.answers[i]||'').trim();return `<section class="question-card" id="q-${i}"><div class="q-top"><div><span class="section-chip">${esc(q.section)}</span><h2><span class="qnum">س${display} — </span>${esc(q.text)}</h2></div><span class="status ${done?'done':''}" id="status-${i}">${done?'✓ تمت الإجابة':'بانتظار الإجابة'}</span></div><textarea id="answer-${i}" placeholder="اكتب الإجابة هنا أو استخدم الميكروفون...">${esc(state.answers[i]||'')}</textarea><div class="voice"><div class="voice-row"><div class="voice-status" id="voiceStatus-${i}">يمكنك التحدث، ثم التوقف واستكمال الكلام لاحقًا بدون فقدان النص.</div><div class="actions"><button class="btn mic voice-btn" data-i="${i}">🎙️ ابدأ التحدث</button><button class="btn secondary stop-btn" data-i="${i}" disabled>⏹️ إيقاف</button></div></div></div></section>`;}
+function render(){$('part0').innerHTML='<div class="section-title">القسم الأول — الأسئلة 1 إلى 24</div>'+questions.slice(0,SPLIT).map((q,i)=>card(q,i,i+1)).join('');$('part1').innerHTML='<div class="section-title">القسم الثاني — يبدأ الترقيم من جديد</div>'+questions.slice(SPLIT).map((q,j)=>card(q,SPLIT+j,j+1)).join('');showPage(activePage,false);questions.forEach((q,i)=>$('answer-'+i).addEventListener('input',e=>{state.answers[i]=e.target.value;persist();$('status-'+i).textContent=e.target.value.trim()?'✓ تمت الإجابة':'بانتظار الإجابة';$('status-'+i).classList.toggle('done',!!e.target.value.trim());}));setupVoice();updateStats();}
+function showPage(p,scroll=true){activePage=p;$('part0').style.display=p===0?'block':'none';$('part1').style.display=p===1?'block':'none';document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===p));if(scroll)window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('.tab').forEach((b,i)=>b.onclick=()=>showPage(i));
+
+let activeRecognition=null;
+
+function setVoiceStatus(i,msg){
+  const el=$('voiceStatus-'+i);
+  if(el) el.textContent=msg;
+}
+
+function friendlyVoiceError(code){
+  const map={
+    'not-allowed':'تم رفض استخدام الميكروفون. اسمح بالمايك من إعدادات الموقع ثم أعد المحاولة.',
+    'service-not-allowed':'خدمة التعرف الصوتي غير مسموح بها في هذا المتصفح أو هذا الوضع.',
+    'audio-capture':'لم يتم العثور على ميكروفون متاح.',
+    'network':'تحتاج خدمة التحويل الصوتي إلى اتصال إنترنت.',
+    'no-speech':'لم يتم التقاط كلام واضح. حاول التحدث مرة أخرى.',
+    'aborted':'تم إيقاف التسجيل.',
+    'language-not-supported':'اللغة العربية غير مدعومة في خدمة التعرف الحالية.'
+  };
+  return map[code]||('حدثت مشكلة في التحويل الصوتي: '+code);
+}
+
+
+async function getMicDiagnostic(){
+  const info={
+    protocol:location.protocol,
+    secure:window.isSecureContext,
+    hasMediaDevices:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),
+    permission:'unknown'
+  };
+
+  if(location.protocol==='file:'){
+    info.reason='file';
+    return info;
+  }
+
+  if(!window.isSecureContext && location.hostname!=='localhost'){
+    info.reason='insecure';
+    return info;
+  }
+
+  if(!info.hasMediaDevices){
+    info.reason='unsupported';
+    return info;
+  }
+
+  if(navigator.permissions && navigator.permissions.query){
+    try{
+      const p=await navigator.permissions.query({name:'microphone'});
+      info.permission=p.state;
+      p.onchange=()=>{};
+      if(p.state==='denied'){
+        info.reason='permission-denied';
+        return info;
+      }
+    }catch(e){}
+  }
+
+  info.reason='ready';
+  return info;
+}
+
+async function requestMicAccess(){
+  const info=await getMicDiagnostic();
+
+  if(info.reason==='file') throw Object.assign(new Error('file'),{code:'file'});
+  if(info.reason==='insecure') throw Object.assign(new Error('insecure'),{code:'insecure'});
+  if(info.reason==='unsupported') throw Object.assign(new Error('unsupported'),{code:'unsupported'});
+  if(info.reason==='permission-denied') throw Object.assign(new Error('permission-denied'),{code:'permission-denied'});
+
+  let stream;
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    return {ok:true,info};
+  }catch(err){
+    let code='unknown';
+    if(err.name==='NotAllowedError'||err.name==='SecurityError') code='blocked';
+    else if(err.name==='NotFoundError') code='no-device';
+    else if(err.name==='NotReadableError') code='busy';
+    else if(err.name==='OverconstrainedError') code='constraint';
+    throw Object.assign(err,{code,info});
+  }finally{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+  }
+}
+
+function explainMicError(err){
+  const code=err&&err.code;
+  const msg=String((err&&err.message)||'');
+
+  if(code==='file')
+    return '⚠️ المشكلة ليست في الصلاحيات: الملف مفتوح مباشرة من الجهاز (file://). في هذا الوضع بعض المتصفحات تمنع الميكروفون والتعرف الصوتي. افتحه من رابط HTTPS.';
+  if(code==='insecure')
+    return '⚠️ الميكروفون يحتاج رابط HTTPS آمن. الصلاحية وحدها لا تكفي إذا كان الرابط HTTP.';
+  if(code==='unsupported')
+    return '⚠️ هذا المتصفح أو طريقة فتح الملف لا تدعم الوصول للميكروفون. جرّب Chrome أو Edge أو Samsung Internet من رابط HTTPS.';
+  if(code==='permission-denied')
+    return '⚠️ المتصفح يرى أن صلاحية الموقع مرفوضة. افتح إعدادات الموقع وتأكد أن Microphone = Allow، ثم أعد تحميل الصفحة.';
+  if(code==='blocked')
+    return '⚠️ تم حظر طلب الميكروفون بواسطة المتصفح أو النظام. إذا كنت متأكدًا أن الموقع مسموح، فتأكد أيضًا من صلاحية تطبيق المتصفح نفسه من إعدادات الهاتف، ولا تفتحه داخل HTML Viewer أو WebView.';
+  if(code==='no-device')
+    return '⚠️ لم يتم العثور على ميكروفون متاح على الجهاز.';
+  if(code==='busy')
+    return '⚠️ الميكروفون مشغول بتطبيق آخر. أغلق أي تسجيل أو مكالمة أو تطبيق يستخدم الميكروفون ثم أعد المحاولة.';
+  if(code==='constraint')
+    return '⚠️ تعذر تشغيل إعدادات الميكروفون المطلوبة على هذا الجهاز.';
+  if(msg) return '⚠️ تعذر تشغيل الميكروفون: '+msg;
+  return '⚠️ حدثت مشكلة غير معروفة عند اختبار الميكروفون.';
+}
+
+function setupVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+  document.querySelectorAll('.voice-btn').forEach(btn=>{
+    const i=+btn.dataset.i;
+    const stop=document.querySelector('.stop-btn[data-i="'+i+'"]');
+
+    if(!SR){
+      btn.disabled=true;
+      setVoiceStatus(i,'⚠️ المتصفح لا يدعم التحويل الصوتي Speech Recognition. جرّب Chrome أو Edge أو Samsung Internet.');
+      return;
+    }
+
+    let r=new SR(),listening=false,base='',starting=false;
+    let manuallyStopped=true, restartTimer=null;
+    let committedText='', sessionFinalText='', interimText='';
+
+    r.lang='ar-EG';
+    r.continuous=true;
+
+    // IMPORTANT:
+    // Do not append every interim/final result directly to the textarea.
+    // Chrome may resend/expand an already-recognized phrase, especially
+    // after silence. We keep one committed transcript and append only the
+    // genuinely new suffix.
+    r.interimResults=true;
+    r.maxAlternatives=1;
+
+    const normalizeVoice = s => String(s||'')
+      .replace(/[\u064B-\u065F\u0670]/g,'')
+      .replace(/[،؛؟!.,:;]+/g,' ')
+      .replace(/\s+/g,' ')
+      .trim();
+
+    const displayNormalize = s => String(s||'')
+      .replace(/\s+/g,' ')
+      .trim();
+
+    function appendUnique(existing,incoming){
+      existing=displayNormalize(existing);
+      incoming=displayNormalize(incoming);
+      if(!incoming) return existing;
+      if(!existing) return incoming;
+
+      const a=normalizeVoice(existing);
+      const b=normalizeVoice(incoming);
+
+      // Exact duplicate or already contained as the end of the transcript.
+      if(a===b || a.endsWith(b)) return existing;
+
+      // If the new recognition is a longer version of what we already have,
+      // append only the part that was not previously committed.
+      if(b.startsWith(a)){
+        const extra=incoming.slice(a.length).trim();
+        return extra ? existing+' '+extra : existing;
+      }
+
+      // Find the largest word overlap: suffix(existing) == prefix(incoming).
+      // This handles cases such as:
+      // "أنا عايز أتكلم عن المريض" + "عن المريض النهارده"
+      // => "أنا عايز أتكلم عن المريض النهارده"
+      const aw=a.split(' ');
+      const bw=b.split(' ');
+      const max=Math.min(aw.length,bw.length,40);
+      for(let n=max;n>=1;n--){
+        const as=aw.slice(-n).join(' ');
+        const bp=bw.slice(0,n).join(' ');
+        if(as===bp){
+          const extraWords=incoming.trim().split(/\s+/).slice(n).join(' ');
+          return extraWords ? existing+' '+extraWords : existing;
+        }
+      }
+
+      // Last protection against the same sentence being returned again with
+      // punctuation/spacing differences.
+      if(a.includes(b) || b.includes(a)) return b.length>a.length ? incoming : existing;
+
+      return existing+' '+incoming;
+    }
+
+    function updateVoiceField(){
+      const value=[committedText,interimText]
+        .map(displayNormalize).filter(Boolean).join(' ');
+      $('answer-'+i).value=value;
+      state.answers[i]=value;
+      persist();
+
+      const hasText=!!value.trim();
+      $('status-'+i).textContent=hasText?'✓ تمت الإجابة':'بانتظار الإجابة';
+      $('status-'+i).classList.toggle('done',hasText);
+    }
+
+    function restartRecognition(){
+      if(manuallyStopped || starting || listening) return;
+      clearTimeout(restartTimer);
+      restartTimer=setTimeout(()=>{
+        if(manuallyStopped || listening) return;
+        try{
+          starting=true;
+          r.start();
+        }catch(err){
+          starting=false;
+          if(!manuallyStopped) restartRecognition();
+        }
+      },250);
+    }
+
+    r.onstart=()=>{
+      starting=false;
+      listening=true;
+      activeRecognition=r;
+      sessionFinalText='';
+      interimText='';
+      btn.classList.add('live');
+      btn.textContent='🔴 جاري الاستماع';
+      stop.disabled=false;
+      setVoiceStatus(i,'🎙️ جاري الاستماع... يمكنك التوقف عن الكلام، ولن يتوقف المايك. اضغط «إيقاف» عند الانتهاء.');
+    };
+
+    r.onresult=e=>{
+      let currentFinal='';
+      let currentInterim='';
+
+      // Read the complete result set. We compare it with the previous
+      // sessionFinalText so a repeated result is never appended twice.
+      for(let k=0;k<e.results.length;k++){
+        const text=displayNormalize(e.results[k][0].transcript);
+        if(!text) continue;
+
+        if(e.results[k].isFinal){
+          currentFinal=appendUnique(currentFinal,text);
+        }else{
+          currentInterim=appendUnique(currentInterim,text);
+        }
+      }
+
+      if(currentFinal){
+        const newFinal=appendUnique(sessionFinalText,currentFinal);
+        const delta=normalizeVoice(newFinal)===normalizeVoice(sessionFinalText)
+          ? ''
+          : newFinal.slice(sessionFinalText.length).trim();
+
+        // If the browser replaced the previous final result with a longer
+        // version, appendUnique already calculated the missing suffix.
+        if(delta) committedText=appendUnique(committedText,delta);
+        sessionFinalText=newFinal;
+      }
+
+      interimText=currentInterim;
+      updateVoiceField();
+    };
+
+    r.onend=()=>{
+      starting=false;
+      listening=false;
+      interimText='';
+      if(activeRecognition===r) activeRecognition=null;
+
+      if(!manuallyStopped){
+        // Browser speech recognition can end by itself after silence.
+        // Keep the user's recording session alive until they press Stop.
+        btn.classList.add('live');
+        btn.textContent='🔴 جاري الاستماع';
+        stop.disabled=false;
+        setVoiceStatus(i,'🎙️ استكمال الاستماع تلقائيًا... اضغط «إيقاف» فقط عند الانتهاء.');
+        restartRecognition();
+        return;
+      }
+
+      btn.classList.remove('live');
+      btn.textContent='🎙️ ابدأ التحدث';
+      stop.disabled=true;
+      const current=$('answer-'+i).value.trim();
+      setVoiceStatus(i,current?'تم حفظ الكلام. يمكنك الضغط مرة أخرى لإضافة المزيد.':'تم إيقاف الاستماع.');
+    };
+
+    r.onerror=e=>{
+      starting=false;
+      const fatal=['not-allowed','service-not-allowed','audio-capture','language-not-supported'].includes(e.error);
+
+      const detailed={
+        'not-allowed':'⚠️ التعرف الصوتي تم حظره.',
+        'service-not-allowed':'⚠️ خدمة التعرف الصوتي غير متاحة في هذا المتصفح.',
+        'audio-capture':'⚠️ لم يتم العثور على ميكروفون متاح.',
+        'network':'⚠️ مشكلة مؤقتة في خدمة التحويل الصوتي — سيستمر التسجيل تلقائيًا.',
+        'no-speech':'لم يتم التقاط كلام في هذه اللحظة — سيستمر الاستماع تلقائيًا.',
+        'aborted':'سيستمر الاستماع ما لم تضغط «إيقاف».',
+        'language-not-supported':'⚠️ اللغة العربية غير مدعومة في خدمة التعرف الحالية.'
+      };
+
+      setVoiceStatus(i,detailed[e.error]||('⚠️ حدثت مشكلة في التحويل الصوتي: '+e.error));
+
+      if(fatal){
+        manuallyStopped=true;
+        listening=false;
+        if(activeRecognition===r) activeRecognition=null;
+        btn.classList.remove('live');
+        btn.textContent='🎙️ ابدأ التحدث';
+        stop.disabled=true;
+      }else if(!manuallyStopped){
+        listening=false;
+        restartRecognition();
+      }
+    };
+
+    btn.onclick=async()=>{
+      if(listening || starting){
+        manuallyStopped=true;
+        clearTimeout(restartTimer);
+        try{r.stop();}catch(e){}
+        return;
+      }
+
+      manuallyStopped=false;
+      starting=true;
+      btn.disabled=true;
+
+      // Keep whatever was already typed in the answer.
+      base=displayNormalize($('answer-'+i).value);
+      committedText=base;
+      sessionFinalText='';
+      interimText='';
+
+      setVoiceStatus(i,'جارٍ فحص الميكروفون وتشغيل التحويل الصوتي...');
+
+      if(activeRecognition && activeRecognition!==r){
+        try{activeRecognition.stop();}catch(e){}
+      }
+
+      try{
+        await requestMicAccess();
+        setVoiceStatus(i,'✓ الميكروفون متاح. جارٍ تشغيل التحويل الصوتي...');
+        r.start();
+      }catch(err){
+        manuallyStopped=true;
+        starting=false;
+        setVoiceStatus(i,explainMicError(err));
+      }finally{
+        setTimeout(()=>{btn.disabled=false;},250);
+      }
+    };
+
+    stop.onclick=()=>{
+      manuallyStopped=true;
+      clearTimeout(restartTimer);
+      if(listening||starting){
+        setVoiceStatus(i,'⏹️ جارٍ إيقاف الميكروفون...');
+        try{r.stop();}catch(e){}
+      }
+    };
+  });
+}
+
+function saved(){
+  try{
+    return JSON.parse(localStorage.getItem(SAVED))||[];
+  }catch(e){
+    return[];
+  }
+}
+
+function saveNamed(){
+  persist();
+
+  const name=prompt(
+    'اكتب اسمًا لحفظ هذا النموذج:',
+    state.doctorName
+      ? state.doctorName+' - '+(state.specialty||'مقابلة')
+      : ''
+  );
+
+  if(!name)return;
+
+  const all=saved();
+
+  all.unshift({
+    id:Date.now().toString(),
+    name,
+    date:new Date().toLocaleString('ar-EG'),
+    data:JSON.parse(JSON.stringify(state))
+  });
+
+  localStorage.setItem(SAVED,JSON.stringify(all));
+
+  alert('تم حفظ النموذج بنجاح.');
+}
+
+async function submitOnline(){
+  persist();
+
+  const btn=$('submitOnlineBtn');
+
+  if(!state.doctorName.trim()){
+    alert('من فضلك أدخل اسم الدكتور أولًا.');
+    return;
+  }
+
+  const payload={
+    doctorName:state.doctorName,
+    specialty:state.specialty,
+    submittedAt:new Date().toLocaleString('ar-EG'),
+    answeredCount:answeredCount(),
+    completion:Math.round(answeredCount()/questions.length*100)
+  };
+
+  questions.forEach((q,i)=>{
+    payload['q'+(i+1)]=state.answers[i]||'';
+  });
+
+  btn.disabled=true;
+  btn.textContent='⏳ جارٍ الإرسال...';
+
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify(payload)
+    });
+
+    alert('✅ تم إرسال نتيجة المقابلة بنجاح.');
+
+  }catch(error){
+    console.error(error);
+    alert('❌ تعذر إرسال النتيجة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='☁️ إرسال النتيجة';
+  }
+}
+
+
+function openModal(){$('modalTitle').textContent='النماذج المحفوظة';const all=saved();$('modalBody').innerHTML=all.length?'<div class="saved-list">'+all.map(x=>{const n=Object.values(x.data.answers||{}).filter(v=>String(v).trim()).length;return `<div class="saved-card"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.data.doctorName||'بدون اسم')} — ${esc(x.data.specialty||'بدون تخصص')}<br>${esc(x.date)} · ${n}/${questions.length} إجابة</div></div><div class="actions"><button class="btn primary loadSaved" data-id="${x.id}">فتح</button><button class="btn danger delSaved" data-id="${x.id}">حذف</button></div></div>`;}).join('')+'</div>':'<p class="muted">لا توجد نماذج محفوظة بعد.</p>';$('modal').classList.add('show');document.querySelectorAll('.loadSaved').forEach(b=>b.onclick=()=>{const x=saved().find(z=>z.id===b.dataset.id);if(x){state=x.data;localStorage.setItem(ACTIVE,JSON.stringify(state));$('doctorName').value=state.doctorName||'';$('specialty').value=state.specialty||'';closeModal();startApp();}});document.querySelectorAll('.delSaved').forEach(b=>b.onclick=()=>{if(confirm('حذف النموذج؟')){localStorage.setItem(SAVED,JSON.stringify(saved().filter(x=>x.id!==b.dataset.id)));openModal();}});}
+function closeModal(){$('modal').classList.remove('show');}
+$('closeModal').onclick=closeModal;$('modal').onclick=e=>{if(e.target===$('modal'))closeModal();};
+function newForm(){if(!confirm('سيتم بدء نموذج جديد فارغ. احفظ الحالي أولًا إذا أردت الاحتفاظ به.'))return;state={doctorName:'',specialty:'',answers:{}};localStorage.removeItem(ACTIVE);$('doctorName').value='';$('specialty').value='';$('app').classList.remove('show');$('startScreen').classList.remove('hide');window.scrollTo({top:0,behavior:'smooth'});}
+function exportDoc(){persist();const rows=questions.map((q,i)=>`<div style="margin-bottom:18px"><h3>س${i+1} — ${esc(q.text)}</h3><p style="white-space:pre-wrap">${esc(state.answers[i]||'لم تتم الإجابة')}</p></div>`).join('');const doc=`<!doctype html><html dir="rtl"><meta charset="utf-8"><body style="font-family:Arial;direction:rtl;line-height:1.8"><h1>نموذج مقابلات الأطباء</h1><p><b>اسم الدكتور:</b> ${esc(state.doctorName||'-')}</p><p><b>التخصص:</b> ${esc(state.specialty||'-')}</p>${rows}</body></html>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([doc],{type:'application/msword;charset=utf-8'}));a.download='نموذج-'+(state.doctorName||'طبيب')+'.doc';a.click();}
+function startApp(){$('startScreen').classList.add('hide');$('app').classList.add('show');render();}
+$('startBtn').onclick=()=>{persist();startApp();};$('submitOnlineBtn').onclick=submitOnline;$('openSavedStart').onclick=openModal;$('savedBtn').onclick=openModal;$('saveQuick').onclick=saveNamed;$('saveBottom').onclick=saveNamed;$('newBtn').onclick=newForm;$('wordBtn').onclick=exportDoc;$('pdfBtn').onclick=()=>{window.print();};$('excelBtn').onclick=exportCurrentExcel;$('mergeExcelBtn').onclick=exportAllSavedExcel;
+
+function xmlEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function excelXmlCell(value, type){
+  const dataType=type==='number'?'Number':'String';
+  return `<Cell><Data ss:Type="${dataType}">${xmlEsc(value)}</Data></Cell>`;
+}
+function excelSheet(name, data){
+  const rows=[];
+  rows.push(`<Row>${excelXmlCell('اسم النموذج')}${excelXmlCell(data.formName||'النموذج الحالي')}${excelXmlCell('تاريخ التصدير')}${excelXmlCell(data.date||new Date().toLocaleString('ar-EG'))}</Row>`);
+  rows.push(`<Row>${excelXmlCell('اسم الدكتور')}${excelXmlCell(data.doctorName||'-')}${excelXmlCell('التخصص')}${excelXmlCell(data.specialty||'-')}</Row>`);
+  rows.push('<Row/>');
+  rows.push(`<Row>${excelXmlCell('رقم السؤال')}${excelXmlCell('القسم')}${excelXmlCell('السؤال')}${excelXmlCell('الإجابة')}</Row>`);
+  questions.forEach((q,i)=>{
+    rows.push(`<Row>${excelXmlCell(i+1,'number')}${excelXmlCell(q.section)}${excelXmlCell(q.text)}${excelXmlCell((data.answers||{})[i]||'')}</Row>`);
+  });
+  return `<Worksheet ss:Name="${xmlEsc(String(name).replace(/[\\\/:*?\[\]]/g,' ').slice(0,31)||'نموذج')}"><Table>${rows.join('')}</Table></Worksheet>`;
+}
+function buildWorkbook(sheets){
+  return `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles><Style ss:ID="Header"><Font ss:Bold="1"/></Style></Styles>
+${sheets.join('')}
+</Workbook>`;
+}
+function downloadExcel(filename, workbook){
+  const blob=new Blob(['\ufeff'+workbook],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+}
+function exportCurrentExcel(){
+  persist();
+  const name=state.doctorName ? state.doctorName+' - '+(state.specialty||'نموذج') : 'النموذج الحالي';
+  const wb=buildWorkbook([excelSheet(name,{...state,formName:name,date:new Date().toLocaleString('ar-EG')})]);
+  downloadExcel('نموذج-'+(state.doctorName||'طبيب')+'.xls',wb);
+}
+function exportAllSavedExcel(){
+  const all=saved();
+  if(!all.length){alert('لا توجد نماذج محفوظة لدمجها بعد.');return;}
+  const sheets=all.map((x,i)=>{
+    const sheetName=(x.name||'نموذج '+(i+1)).slice(0,31);
+    return excelSheet(sheetName,{...x.data,formName:x.name,date:x.date});
+  });
+  const wb=buildWorkbook(sheets);
+  downloadExcel('كل-النماذج-المحفوظة.xls',wb);
+}
+
+function updateSystemBanner(){
+  const b=$('systemBanner');
+  if(location.protocol==='file:'){
+    b.innerHTML='<div class="system-banner-inner warn">⚠️ تم فتح الملف مباشرة من الجهاز (file://). التفاعل الأساسي قد يعمل، لكن بعض المتصفحات تمنع الميكروفون والتعرف الصوتي هنا حتى لو كانت صلاحية الميكروفون مفعلة. للحصول على تجربة كاملة على الموبايل والتابلت، افتحه من رابط HTTPS.</div>';
+  }else if(!window.isSecureContext && location.hostname!=='localhost'){
+    b.innerHTML='<div class="system-banner-inner warn">⚠️ هذه الصفحة ليست في وضع آمن. الميكروفون يحتاج HTTPS.</div>';
+  }else{
+    b.innerHTML='<div class="system-banner-inner ok">✓ التطبيق يعمل في وضع مناسب للموبايل. يمكنك استخدام الحفظ والتفاعل، والميكروفون سيطلب الصلاحية عند أول استخدام.</div>';
+  }
+}
+
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
+updateSystemBanner();
+
+// Start every browser opening with a completely fresh interview.
+// Previously saved named interviews remain available from "المحفوظات".
+state={doctorName:'',specialty:'',answers:{}};
+localStorage.removeItem(ACTIVE);
+$('doctorName').value='';
+$('specialty').value='';
+
+/* ===== Interview Insights Analysis Module ===== */
+const analysisCatalog = [
+  {id:'routine', name:'الروتين اليومي وإهدار الوقت', questions:[0,1,2]},
+  {id:'appointments', name:'المواعيد والـ No-Shows', questions:[3,4,5,9]},
+  {id:'records', name:'ملفات المرضى والمعلومات الطبية', questions:[6,7,8]},
+  {id:'followup', name:'المتابعة والتواصل بعد الكشف', questions:[10,25,26]},
+  {id:'finance', name:'الفواتير والمدفوعات والإدارة المالية', questions:[11,12,13]},
+  {id:'prescription', name:'الروشتات والوصفات', questions:[14,34]},
+  {id:'analytics', name:'الإحصائيات واتخاذ القرار', questions:[15]},
+  {id:'technology', name:'تجارب التكنولوجيا ومقاومة التغيير', questions:[16,17,18]},
+  {id:'staff', name:'الموظفون والتنسيق الداخلي', questions:[19,20]},
+  {id:'adoption', name:'طريقة الانتقال للنظام', questions:[22]},
+  {id:'pricing', name:'الدفع والاستعداد للاشتراك', questions:[23]},
+  {id:'pediatric-family', name:'أطباء الأطفال — الأسرة والأهل', questions:[24,25,26]},
+  {id:'vaccines', name:'أطباء الأطفال — التطعيمات', questions:[27,28,29]},
+  {id:'growth', name:'أطباء الأطفال — النمو والتطور', questions:[30,31]},
+  {id:'pediatric-meds', name:'أطباء الأطفال — الأدوية والجرعات', questions:[32,33]},
+  {id:'strategic', name:'المشكلة الاستراتيجية الأكبر', questions:[34]}
+];
+
+const analysisStoreKey='doctorInterviewAnalysisV1';
+let analysisState={problems:[]};
+
+function loadAnalysis(){
+  try{
+    const x=JSON.parse(localStorage.getItem(analysisStoreKey));
+    if(x&&Array.isArray(x.problems)) analysisState=x;
+  }catch(e){}
+}
+function persistAnalysis(){
+  localStorage.setItem(analysisStoreKey,JSON.stringify(analysisState));
+}
+function interviewAnswered(i){
+  return String(state.answers[i]||'').trim();
+}
+function allInterviewText(){
+  return questions.map((q,i)=>interviewAnswered(i)?`س${i+1}: ${interviewAnswered(i)}`:'').filter(Boolean).join('\n');
+}
+function getCandidateSignals(){
+  const text=allInterviewText();
+  const lower=text.toLowerCase();
+  const signals=[
+    {terms:['موعد','مواعيد','حجز','نوبت','no-show','نوشو','لم يحضر','ماجاش','كنسل','إلغاء'],id:'appointments'},
+    {terms:['ملف','تاريخ المريض','معلومات عن مريض','ورق','دوسيه','سجل'],id:'records'},
+    {terms:['متابعة','استشارة','واتساب','رسالة','تواصل','تعليمات'],id:'followup'},
+    {terms:['فاتورة','إيرادات','مصروفات','مدفوع','كاش','كارت','تحويل','حسابات'],id:'finance'},
+    {terms:['روشت','وصفة','جرعة','الصيدلي','كتابة يدوي','طباعة'],id:'prescription'},
+    {terms:['إحصائ','تقارير','أوقات الذروة','حالات شائعة'],id:'analytics'},
+    {terms:['برنامج','تطبيق','نظام','سيستم','جربت','رجعت للطريقة القديمة'],id:'technology'},
+    {terms:['موظف','سكرتير','مساعد','واتساب','تنسيق'],id:'staff'},
+    {terms:['تطعيم','تطعيمات','جرعة التطعيم'],id:'vaccines'},
+    {terms:['وزن','طول','نمو','منحنى','معالم تطورية','تطور'],id:'growth'},
+    {terms:['أهل','الأم','الأب','إخوات','الأسرة','الطفل'],id:'pediatric-family'}
+  ];
+  return signals.map(s=>({...s,score:s.terms.reduce((n,t)=>n+(lower.includes(t.toLowerCase())?1:0),0)}))
+    .filter(s=>s.score>0).sort((a,b)=>b.score-a.score);
+}
+function candidateProblems(){
+  const sig=getCandidateSignals();
+  const out=[];
+  sig.slice(0,8).forEach(s=>{
+    const c=analysisCatalog.find(x=>x.id===s.id);
+    if(c && !analysisState.problems.some(p=>p.catalogId===c.id)){
+      out.push({
+        id:'p'+Date.now()+Math.random().toString(16).slice(2),
+        catalogId:c.id,
+        title:c.name,
+        evidence: c.questions.map(i=>interviewAnswered(i)?`س${i+1}: ${interviewAnswered(i)}`:'').filter(Boolean).join('\n'),
+        frequency:1,severity:3,timeLoss:3,revenueImpact:2,confidence:2,
+        solution:'',feature:'',notes:'',sourceDoctor:state.doctorName||''
+      });
+    }
+  });
+  return out;
+}
+function scoreProblem(p){
+  // Frequency 1-5, Severity 1-5, Time loss 1-5, Revenue impact 1-5, Confidence 1-3.
+  return Math.round((p.frequency*2 + p.severity*2 + p.timeLoss*1.5 + p.revenueImpact*1.5 + p.confidence)/2);
+}
+function scoreClass(s){
+  if(s>=22)return 'high';
+  if(s>=14)return 'medium';
+  return 'low';
+}
+function escA(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderAnalysis(){
+  const page=$('analysisPage');
+  if(!page)return;
+  const answered=answeredCount();
+  const problems=[...analysisState.problems].sort((a,b)=>scoreProblem(b)-scoreProblem(a));
+  const high=problems.filter(p=>scoreProblem(p)>=22).length;
+  const avg=problems.length?Math.round(problems.reduce((n,p)=>n+scoreProblem(p),0)/problems.length):0;
+  const specialty=state.specialty||'غير محدد';
+
+  page.innerHTML=`<div class="analysis-page active">
+    <div class="analysis-hero">
+      <h2>📊 تحليل الـ Insights → Problems → MVP</h2>
+      <p class="muted">هذه الصفحة تحول إجابات المقابلة إلى مجموعة مشاكل قابلة للترميز، ثم ترتبها حسب الأولوية، وتربط كل مشكلة بحل/Feature مقترح. التحليل الآلي هنا مساعد للباحث وليس بديلًا عن مراجعته للإجابة.</p>
+      <div class="analysis-toolbar">
+        <button class="btn primary" id="suggestProblemsBtn">✨ اقترح مشاكل من الإجابات</button>
+        <button class="btn secondary" id="addProblemBtn">➕ إضافة مشكلة يدويًا</button>
+        <button class="btn secondary" id="exportInsightsBtn">📊 تصدير Insights</button>
+        <button class="btn success" id="exportMvpBtn">🚀 تصدير MVP Priorities</button>
+        <button class="btn danger" id="clearAnalysisBtn">مسح تحليل المقابلة</button>
+      </div>
+    </div>
+
+    <div class="analysis-grid">
+      <div class="insight-stat"><div class="big">${answered}/${questions.length}</div><div class="muted">إجابات مكتملة</div></div>
+      <div class="insight-stat"><div class="big">${problems.length}</div><div class="muted">مشاكل محللة</div></div>
+      <div class="insight-stat"><div class="big">${high}</div><div class="muted">مشاكل أولوية عالية</div></div>
+      <div class="insight-stat"><div class="big">${avg}</div><div class="muted">متوسط أولوية المشكلة</div></div>
+    </div>
+
+    <div class="analysis-section">
+      <h3>1) ملخص المقابلة</h3>
+      <table class="insight-table">
+        <tr><th>الطبيب</th><td>${escA(state.doctorName||'غير محدد')}</td><th>التخصص</th><td>${escA(specialty)}</td></tr>
+        <tr><th>نسبة الإجابة</th><td>${Math.round(answered/questions.length*100)}%</td><th>عدد النصوص</th><td>${answered}</td></tr>
+      </table>
+    </div>
+
+    <div class="analysis-section">
+      <h3>2) المشاكل المكتشفة وترميزها</h3>
+      <p class="muted">استخدم 1–5 لتقدير تكرار المشكلة، شدتها، الوقت الذي تستهلكه، وتأثيرها على الإيراد. الثقة 1–3 تعكس مدى وضوح الدليل من كلام الطبيب.</p>
+      <div id="problemList" class="problem-list"></div>
+    </div>
+
+    <div class="analysis-section">
+      <h3>3) ترتيب الأولويات</h3>
+      <div id="priorityList" class="priority-list"></div>
+    </div>
+
+    <div class="analysis-section">
+      <h3>4) تحويل المشاكل إلى MVP Features</h3>
+      <div id="featureMap" class="feature-map"></div>
+    </div>
+  </div>`;
+
+  renderProblemList();
+  renderPriorityList();
+  renderFeatureMap();
+
+  $('suggestProblemsBtn').onclick=()=>{
+    const candidates=candidateProblems();
+    if(!candidates.length){alert('لم يتم العثور على مشكلة جديدة من النص الحالي، أو تم اقتراحها من قبل. يمكنك إضافتها يدويًا.');return;}
+    analysisState.problems.push(...candidates);
+    persistAnalysis(); renderAnalysis();
+  };
+  $('addProblemBtn').onclick=()=>{
+    analysisState.problems.push({
+      id:'p'+Date.now(),catalogId:'manual',title:'مشكلة جديدة',evidence:'',
+      frequency:1,severity:1,timeLoss:1,revenueImpact:1,confidence:1,solution:'',feature:'',notes:'',sourceDoctor:state.doctorName||''
+    });
+    persistAnalysis(); renderAnalysis();
+  };
+  $('clearAnalysisBtn').onclick=()=>{
+    if(confirm('مسح كل ترميز المشاكل لهذه المقابلة؟')){
+      analysisState={problems:[]};persistAnalysis();renderAnalysis();
+    }
+  };
+  $('exportInsightsBtn').onclick=exportInsightsCsv;
+  $('exportMvpBtn').onclick=exportMvpCsv;
+}
+function renderProblemList(){
+  const el=$('problemList'); if(!el)return;
+  if(!analysisState.problems.length){el.innerHTML='<div class="empty-state">لم تتم إضافة مشاكل بعد. اضغط «اقترح مشاكل من الإجابات» أو أضف مشكلة يدويًا.</div>';return;}
+  el.innerHTML=analysisState.problems.map((p,idx)=>{
+    const s=scoreProblem(p), cls=scoreClass(s);
+    return `<div class="problem-card" data-pid="${escA(p.id)}">
+      <div class="problem-head">
+        <div>
+          <div class="problem-title">${escA(p.title)}</div>
+          <div class="problem-meta"><span class="pill ${cls}">أولوية ${s}</span><span class="pill">${escA(p.sourceDoctor||state.doctorName||'')}</span></div>
+        </div>
+        <button class="btn danger delete-problem" data-id="${escA(p.id)}">حذف</button>
+      </div>
+      <div class="problem-fields">
+        <div><label>التكرار 1–5</label><input type="number" min="1" max="5" data-field="frequency" value="${p.frequency}"></div>
+        <div><label>شدة المشكلة 1–5</label><input type="number" min="1" max="5" data-field="severity" value="${p.severity}"></div>
+        <div><label>إهدار الوقت 1–5</label><input type="number" min="1" max="5" data-field="timeLoss" value="${p.timeLoss}"></div>
+        <div><label>تأثير الإيراد 1–5</label><input type="number" min="1" max="5" data-field="revenueImpact" value="${p.revenueImpact}"></div>
+      </div>
+      <div class="problem-fields">
+        <div><label>الثقة في الدليل 1–3</label><input type="number" min="1" max="3" data-field="confidence" value="${p.confidence}"></div>
+        <div><label>الحل المقترح</label><input data-field="solution" value="${escA(p.solution)}" placeholder="ما الحل الذي قد يعالج المشكلة؟"></div>
+        <div><label>Feature محتملة</label><input data-field="feature" value="${escA(p.feature)}" placeholder="اسم الميزة"></div>
+        <div class="score-box"><div>Priority Score</div><b>${s}</b></div>
+      </div>
+      <label style="margin-top:12px">الدليل من كلام الطبيب</label>
+      <textarea data-field="evidence" placeholder="انسخ/لخص الجملة التي تثبت المشكلة...">${escA(p.evidence)}</textarea>
+      <label style="margin-top:10px">ملاحظات الباحث</label>
+      <textarea data-field="notes" placeholder="ملاحظات، assumptions، أسئلة تحتاج تحقق...">${escA(p.notes)}</textarea>
+    </div>`;
+  }).join('');
+
+  el.querySelectorAll('[data-pid]').forEach(card=>{
+    const id=card.dataset.pid;
+    card.querySelectorAll('[data-field]').forEach(inp=>{
+      inp.addEventListener('input',()=>{
+        const p=analysisState.problems.find(x=>x.id===id); if(!p)return;
+        let v=inp.value;
+        if(['frequency','severity','timeLoss','revenueImpact','confidence'].includes(inp.dataset.field))v=Math.max(1,Number(v)||1);
+        p[inp.dataset.field]=v; persistAnalysis();
+        const score=card.querySelector('.score-box b'); if(score)score.textContent=scoreProblem(p);
+      });
+      inp.addEventListener('change',()=>{renderPriorityList();renderFeatureMap();});
+    });
+  });
+  el.querySelectorAll('.delete-problem').forEach(btn=>btn.onclick=()=>{
+    analysisState.problems=analysisState.problems.filter(p=>p.id!==btn.dataset.id);
+    persistAnalysis();renderAnalysis();
+  });
+}
+function renderPriorityList(){
+  const el=$('priorityList'); if(!el)return;
+  const arr=[...analysisState.problems].sort((a,b)=>scoreProblem(b)-scoreProblem(a));
+  if(!arr.length){el.innerHTML='<div class="empty-state">ستظهر الأولويات بعد ترميز المشاكل.</div>';return;}
+  el.innerHTML=arr.map((p,i)=>`<div class="priority-item">
+    <div class="rank">${i+1}</div>
+    <div><b>${escA(p.title)}</b><div class="muted">${escA(p.feature||'لم يتم ربطها بميزة بعد')} · ${escA(p.solution||'لم يتم تحديد الحل بعد')}</div></div>
+    <div class="priority-score">${scoreProblem(p)}</div>
+  </div>`).join('');
+}
+function renderFeatureMap(){
+  const el=$('featureMap'); if(!el)return;
+  const arr=[...analysisState.problems].filter(p=>p.feature||p.solution).sort((a,b)=>scoreProblem(b)-scoreProblem(a));
+  if(!arr.length){el.innerHTML='<div class="empty-state" style="grid-column:1/-1">أضف Feature وحلًا مقترحًا للمشاكل كي تظهر خريطة الـ MVP.</div>';return;}
+  el.innerHTML=arr.map(p=>`<div class="feature-card">
+    <h4>🎯 ${escA(p.feature||'Feature غير مسماة')}</h4>
+    <div class="muted"><b>المشكلة:</b> ${escA(p.title)}</div>
+    <div class="muted"><b>الحل:</b> ${escA(p.solution||'-')}</div>
+    <div class="problem-meta"><span class="pill ${scoreClass(scoreProblem(p))}">Priority ${scoreProblem(p)}</span><span class="tag">${escA(p.sourceDoctor||state.doctorName||'')}</span></div>
+  </div>`).join('');
+}
+function csvCell(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}
+function downloadCsv(name,rows){
+  const csv='\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+}
+function exportInsightsCsv(){
+  const rows=[['الطبيب','التخصص','المشكلة','التكرار','الشدة','إهدار الوقت','تأثير الإيراد','الثقة','Priority Score','الحل','Feature','الدليل','ملاحظات']];
+  analysisState.problems.forEach(p=>rows.push([state.doctorName,state.specialty,p.title,p.frequency,p.severity,p.timeLoss,p.revenueImpact,p.confidence,scoreProblem(p),p.solution,p.feature,p.evidence,p.notes]));
+  if(rows.length===1){alert('لا توجد مشاكل لتحليلها.');return;}
+  downloadCsv('Interview-Insights-'+(state.doctorName||'doctor')+'.csv',rows);
+}
+function exportMvpCsv(){
+  const rows=[['Rank','المشكلة','Priority Score','Feature','الحل','الدليل','ملاحظات']];
+  [...analysisState.problems].sort((a,b)=>scoreProblem(b)-scoreProblem(a)).forEach((p,i)=>rows.push([i+1,p.title,scoreProblem(p),p.feature,p.solution,p.evidence,p.notes]));
+  if(rows.length===1){alert('لا توجد أولويات بعد.');return;}
+  downloadCsv('MVP-Priorities-'+(state.doctorName||'doctor')+'.csv',rows);
+}
+
+/* Override page switching to support the analysis page. */
+const originalShowPage=showPage;
+showPage=function(p,scroll=true){
+  activePage=p;
+  $('part0').style.display=p===0?'block':'none';
+  $('part1').style.display=p===1?'block':'none';
+  $('analysisPage').style.display=p===2?'block':'none';
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',i===p));
+  if(p===2) renderAnalysis();
+  if(scroll)window.scrollTo({top:0,behavior:'smooth'});
+};
+
+/* Re-render analysis when a saved interview is opened. */
+const originalStartApp=startApp;
+startApp=function(){ originalStartApp(); loadAnalysis(); };
+loadAnalysis();
+
+</script>
+</body></html>
