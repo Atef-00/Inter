@@ -98,7 +98,7 @@ button,input,textarea{font:inherit} button{cursor:pointer} .shell{max-width:1100
 </div></div></div>
 <div id="part0"></div><div id="part1"></div><div id="analysisPage"></div>
 
-<section class="review panel" id="review"><h2>ملخص المقابلة</h2><div class="summary-grid"><div class="summary-card"><div class="big" id="sumAnswered">0</div><div class="muted">إجابات مكتملة</div></div><div class="summary-card"><div class="big" id="sumMissing">0</div><div class="muted">أسئلة بدون إجابة</div></div><div class="summary-card"><div class="big" id="sumPercent">0%</div><div class="muted">نسبة الاكتمال</div></div></div><div class="actions review-actions" style="margin-top:18px"><button class="btn primary" id="saveBottom">💾 حفظ النموذج</button><button class="btn secondary" id="wordBtn">📄 Word</button><button class="btn secondary" id="pdfBtn">🖨️ PDF</button><button class="btn success" id="excelBtn">📊 Excel</button><button class="btn success" id="mergeExcelBtn">📚 دمج كل المحفوظات في Excel</button><button class="btn secondary" id="newBtn">➕ نموذج جديد</button></div></section>
+<section class="review panel" id="review"><h2>ملخص المقابلة</h2><div class="summary-grid"><div class="summary-card"><div class="big" id="sumAnswered">0</div><div class="muted">إجابات مكتملة</div></div><div class="summary-card"><div class="big" id="sumMissing">0</div><div class="muted">أسئلة بدون إجابة</div></div><div class="summary-card"><div class="big" id="sumPercent">0%</div><div class="muted">نسبة الاكتمال</div></div></div><div class="actions review-actions" style="margin-top:18px"><button class="btn primary" id="saveBottom">💾 حفظ النموذج</button><button class="btn primary" id="submitOnlineBtn">☁️ إرسال النتيجة</button><button class="btn secondary" id="wordBtn">📄 Word</button><button class="btn secondary" id="pdfBtn">🖨️ PDF</button><button class="btn success" id="excelBtn">📊 Excel</button><button class="btn success" id="mergeExcelBtn">📚 دمج كل المحفوظات في Excel</button><button class="btn secondary" id="newBtn">➕ نموذج جديد</button></div></section>
 </div>
 </main>
 
@@ -107,6 +107,7 @@ button,input,textarea{font:inherit} button{cursor:pointer} .shell{max-width:1100
 <script>
 const questions=[{"section": "القسم العام — الروتين اليومي", "text": "صف لي يومك من أول ما تفتح العيادة لحد ما تقفلها — خطوة خطوة."}, {"section": "القسم العام — الروتين اليومي", "text": "ما أكثر جزء في يومك يأخذ وقتًا أكثر مما يجب؟"}, {"section": "القسم العام — الروتين اليومي", "text": "إيه آخر حاجة خلتك تتأخر في البيت أو تتعصب في الشغل؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "إزاي بتتعامل دلوقتي مع حجز المواعيد؟ مين اللي بيعمل ده؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "بتحصل منك مشاكل مع المرضى اللي مجاوش الموعد؟ بتعمل إيه في الوقت الفاضي؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "لو مريض أجيل أو كنسل موعده — بتعمل إيه؟ بتقدر تملاله بحد تاني بسرعة؟"}, {"section": "القسم العام — ملفات المرضى", "text": "لو محتاج معلومة عن مريض دلوقتي — بتلاقيها فين وفي كام دقيقة؟"}, {"section": "القسم العام — ملفات المرضى", "text": "لو مريض جه بعد 6 شهور من غيابه — بتراجع تاريخه إزاي؟"}, {"section": "القسم العام — ملفات المرضى", "text": "بتكتب ملاحظاتك على المريض إزاي؟ ورق؟ كمبيوتر؟ تليفون؟"}, {"section": "القسم العام — المواعيد والـ No-Shows", "text": "هل تستخدم أي نظام لتذكير المرضى بمواعيدهم لتقليل نسبة التخلف عن الحضور؟"}, {"section": "القسم العام — المتابعة بعد الكشف", "text": "كيف تتعامل مع الاستشارات والمتابعات بعد الكشف؟"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتعمل الفواتير إزاي؟ بياخد منك قد إيه وقت في اليوم؟ (كيف تتابع حسابات العيادة اليومية والشهرية (الإيرادات، المصروفات، رواتب المساعدين)؟)"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتقبل المدفوعات إزاي؟ كاش بس ولا كارت أو فوري أو تحويل؟"}, {"section": "القسم العام — الفواتير والمدفوعات", "text": "بتعمل تقارير مالية؟ بتعرف إيرادات العيادة في نهاية الشهر إزاي؟"}, {"section": "القسم العام — الروشتات", "text": "كيف تتعامل مع الروشتات؟ هل تفضل كتابتها يدوياً أم طباعتها؟ وما هو الوقت المستغرق في كليهما؟"}, {"section": "القسم العام — الإحصائيات", "text": "هل لديك طريقة لمعرفة إحصائيات عيادتك (أكثر الحالات شيوعاً، نسبة حضور المرضى، أوقات الذروة)؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "هل جربت أي برنامج أو تطبيق لإدارة العيادة قبل كده؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "لو سبق وجربت نظام وعدت للطريقة القديمة — ليه بالظبط؟"}, {"section": "القسم العام — التجارب السابقة مع التكنولوجيا", "text": "لو نظام مثالي اتعمل النهارده — إيه أول حاجة كنت عايزها تتحل؟"}, {"section": "القسم العام — الموظفون والتنسيق", "text": "كام موظف معاك في العيادة؟ بيعملوا إيه بالظبط كل يوم؟"}, {"section": "القسم العام — الموظفون والتنسيق", "text": "بتنسق مع الموظفين إزاي؟ واتساب؟ شفهي؟ ورق؟"}, {"section": "القسم العام — سؤال الإغلاق", "text": "مين من زمايلك يعاني من نفس التحديات اللي اتكلمنا عنها؟ ممكن تعرفني عليه؟"}, {"section": "القسم العام — الانتقال إلى نظام جديد", "text": "هل تفضل تبدأ باستخدام جزء واحد من النظام، ولا تنقل كل شغل العيادة مرة واحدة؟ وليه؟"}, {"section": "القسم العام — الدفع والاشتراك", "text": "لو لقيت نظام فعلاً وفر عليك وقت وحل أهم المشاكل اللي عندك، إيه الطريقة اللي تفضل تدفع بيها: اشتراك شهري، سنوي، ولا حسب الاستخدام؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "مين اللي بيجيب الطفل للعيادة في الغالب؟ الأم؟ الأب؟ الاتنين؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "بتتواصل مع أهل المريض بعد الكشف إزاي لو احتجت تبعتلهم تعليمات؟"}, {"section": "قسم أطباء الأطفال — التعامل مع الأهل", "text": "لو عندك إخوات في نفس الأسرة — بتتعامل مع ملفاتهم إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "إزاي بتتعامل مع جدول التطعيمات؟ بتتذكر مواعيد التطعيم لكل طفل إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "بتبعت تذكير للأهل بموعد التطعيم القادم؟ بتعمل ده إزاي؟"}, {"section": "قسم أطباء الأطفال — التطعيمات", "text": "لو طفل جه بعد سنة — بتعرف إيه التطعيمات اللي أخدها وإيه اللي ناقص؟"}, {"section": "قسم أطباء الأطفال — منحنيات النمو والمتابعة", "text": "بتتابع وزن وطول الأطفال إزاي؟ بترسم منحنيات النمو؟"}, {"section": "قسم أطباء الأطفال — منحنيات النمو والمتابعة", "text": "بتتابع المعالم التطورية للطفل (حركة، كلام، إدراك)؟ بتوثقها إزاي؟"}, {"section": "قسم أطباء الأطفال — الأدوية وجرعات الأطفال", "text": "لما بتكتب وصفة للطفل — بتحسب الجرعة إزاي بالنسبة للوزن؟"}, {"section": "قسم أطباء الأطفال — الأدوية وجرعات الأطفال", "text": "بتكتب الوصفات يدوي ولا على كمبيوتر؟ هل الصيدلي بيفهمها دائمًا؟"}, {"section": "قسم أطباء الأطفال — السؤال الاستراتيجي", "text": "من تجربتك، إيه أكبر حاجة لو اتحلت هتخلي وقتك مع المريض أطول؟"}];
 const ACTIVE='doctorInterviewUIUXActiveV1', SAVED='doctorInterviewUIUXSavedV1', SPLIT=24;
+  const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycby0AiEj4FO9WAihGxRqmfdLz8vlsbjJ7mcgXf8x2JmgJUnFVCnc3njw52Y7Z260oTFN/exec';
 const $=id=>document.getElementById(id);
 let state={doctorName:'',specialty:'',answers:{}}, activePage=0;
 
@@ -482,14 +483,59 @@ function setupVoice(){
 }
 
 function saved(){try{return JSON.parse(localStorage.getItem(SAVED))||[]}catch(e){return[]}}
-function saveNamed(){persist();const name=prompt('اكتب اسمًا لحفظ هذا النموذج:',state.doctorName?state.doctorName+' - '+(state.specialty||'مقابلة'):'');if(!name)return;const all=saved();all.unshift({id:Date.now().toString(),name,date:new Date().toLocaleString('ar-EG'),data:JSON.parse(JSON.stringify(state))});localStorage.setItem(SAVED,JSON.stringify(all));alert('تم حفظ النموذج بنجاح.');}
+function saveNamed()async function submitOnline(){
+  persist();
+
+  const btn=$('submitOnlineBtn');
+
+  if(!state.doctorName.trim()){
+    alert('من فضلك أدخل اسم الدكتور أولًا.');
+    return;
+  }
+
+  const payload={
+    doctorName:state.doctorName,
+    specialty:state.specialty,
+    submittedAt:new Date().toLocaleString('ar-EG'),
+    answeredCount:answeredCount(),
+    completion:Math.round(answeredCount()/questions.length*100)
+  };
+
+  questions.forEach((q,i)=>{
+    payload['q'+(i+1)]=state.answers[i]||'';
+  });
+
+  btn.disabled=true;
+  btn.textContent='⏳ جارٍ الإرسال...';
+
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify(payload)
+    });
+
+    alert('✅ تم إرسال نتيجة المقابلة بنجاح.');
+
+  }catch(error){
+    console.error(error);
+    alert('❌ تعذر إرسال النتيجة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='☁️ إرسال النتيجة';
+  }
+}{persist();const name=prompt('اكتب اسمًا لحفظ هذا النموذج:',state.doctorName?state.doctorName+' - '+(state.specialty||'مقابلة'):'');if(!name)return;const all=saved();all.unshift({id:Date.now().toString(),name,date:new Date().toLocaleString('ar-EG'),data:JSON.parse(JSON.stringify(state))});localStorage.setItem(SAVED,JSON.stringify(all));alert('تم حفظ النموذج بنجاح.');}
 function openModal(){$('modalTitle').textContent='النماذج المحفوظة';const all=saved();$('modalBody').innerHTML=all.length?'<div class="saved-list">'+all.map(x=>{const n=Object.values(x.data.answers||{}).filter(v=>String(v).trim()).length;return `<div class="saved-card"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.data.doctorName||'بدون اسم')} — ${esc(x.data.specialty||'بدون تخصص')}<br>${esc(x.date)} · ${n}/${questions.length} إجابة</div></div><div class="actions"><button class="btn primary loadSaved" data-id="${x.id}">فتح</button><button class="btn danger delSaved" data-id="${x.id}">حذف</button></div></div>`;}).join('')+'</div>':'<p class="muted">لا توجد نماذج محفوظة بعد.</p>';$('modal').classList.add('show');document.querySelectorAll('.loadSaved').forEach(b=>b.onclick=()=>{const x=saved().find(z=>z.id===b.dataset.id);if(x){state=x.data;localStorage.setItem(ACTIVE,JSON.stringify(state));$('doctorName').value=state.doctorName||'';$('specialty').value=state.specialty||'';closeModal();startApp();}});document.querySelectorAll('.delSaved').forEach(b=>b.onclick=()=>{if(confirm('حذف النموذج؟')){localStorage.setItem(SAVED,JSON.stringify(saved().filter(x=>x.id!==b.dataset.id)));openModal();}});}
 function closeModal(){$('modal').classList.remove('show');}
 $('closeModal').onclick=closeModal;$('modal').onclick=e=>{if(e.target===$('modal'))closeModal();};
 function newForm(){if(!confirm('سيتم بدء نموذج جديد فارغ. احفظ الحالي أولًا إذا أردت الاحتفاظ به.'))return;state={doctorName:'',specialty:'',answers:{}};localStorage.removeItem(ACTIVE);$('doctorName').value='';$('specialty').value='';$('app').classList.remove('show');$('startScreen').classList.remove('hide');window.scrollTo({top:0,behavior:'smooth'});}
 function exportDoc(){persist();const rows=questions.map((q,i)=>`<div style="margin-bottom:18px"><h3>س${i+1} — ${esc(q.text)}</h3><p style="white-space:pre-wrap">${esc(state.answers[i]||'لم تتم الإجابة')}</p></div>`).join('');const doc=`<!doctype html><html dir="rtl"><meta charset="utf-8"><body style="font-family:Arial;direction:rtl;line-height:1.8"><h1>نموذج مقابلات الأطباء</h1><p><b>اسم الدكتور:</b> ${esc(state.doctorName||'-')}</p><p><b>التخصص:</b> ${esc(state.specialty||'-')}</p>${rows}</body></html>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([doc],{type:'application/msword;charset=utf-8'}));a.download='نموذج-'+(state.doctorName||'طبيب')+'.doc';a.click();}
 function startApp(){$('startScreen').classList.add('hide');$('app').classList.add('show');render();}
-$('startBtn').onclick=()=>{persist();startApp();};$('openSavedStart').onclick=openModal;$('savedBtn').onclick=openModal;$('saveQuick').onclick=saveNamed;$('saveBottom').onclick=saveNamed;$('newBtn').onclick=newForm;$('wordBtn').onclick=exportDoc;$('pdfBtn').onclick=()=>{window.print();};$('excelBtn').onclick=exportCurrentExcel;$('mergeExcelBtn').onclick=exportAllSavedExcel;
+$('startBtn').onclick=()=>{persist();startApp();};$('startBtn').onclick=()=>{persist();startApp();};
+$('submitOnlineBtn').onclick=submitOnline;$('openSavedStart').onclick=openModal;$('savedBtn').onclick=openModal;$('saveQuick').onclick=saveNamed;$('saveBottom').onclick=saveNamed;$('newBtn').onclick=newForm;$('wordBtn').onclick=exportDoc;$('pdfBtn').onclick=()=>{window.print();};$('excelBtn').onclick=exportCurrentExcel;$('mergeExcelBtn').onclick=exportAllSavedExcel;
 
 function xmlEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function excelXmlCell(value, type){
