@@ -483,7 +483,73 @@ function setupVoice(){
 }
 
 function saved(){try{return JSON.parse(localStorage.getItem(SAVED))||[]}catch(e){return[]}}
-function saveNamed()async function submitOnline(){
+
+function saveNamed(){
+  persist();
+  const name=prompt(
+    'اكتب اسمًا لحفظ هذا النموذج:',
+    state.doctorName ? state.doctorName+' - '+(state.specialty||'مقابلة') : ''
+  );
+  if(!name)return;
+
+  const all=saved();
+
+  all.unshift({
+    id:Date.now().toString(),
+    name,
+    date:new Date().toLocaleString('ar-EG'),
+    data:JSON.parse(JSON.stringify(state))
+  });
+
+  localStorage.setItem(SAVED,JSON.stringify(all));
+  alert('تم حفظ النموذج بنجاح.');
+}
+
+async function submitOnline(){
+  persist();
+
+  const btn=$('submitOnlineBtn');
+
+  if(!state.doctorName.trim()){
+    alert('من فضلك أدخل اسم الدكتور أولًا.');
+    return;
+  }
+
+  const payload={
+    doctorName:state.doctorName,
+    specialty:state.specialty,
+    submittedAt:new Date().toLocaleString('ar-EG'),
+    answeredCount:answeredCount(),
+    completion:Math.round(answeredCount()/questions.length*100)
+  };
+
+  questions.forEach((q,i)=>{
+    payload['q'+(i+1)]=state.answers[i]||'';
+  });
+
+  btn.disabled=true;
+  btn.textContent='⏳ جارٍ الإرسال...';
+
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify(payload)
+    });
+
+    alert('✅ تم إرسال نتيجة المقابلة بنجاح.');
+
+  }catch(error){
+    console.error(error);
+    alert('❌ تعذر إرسال النتيجة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='☁️ إرسال النتيجة';
+  }
+}async function submitOnline(){
   persist();
 
   const btn=$('submitOnlineBtn');
