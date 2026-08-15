@@ -526,12 +526,27 @@ async function submitOnline(){
     return;
   }
 
+  // Prevent duplicate submission
+  if(state.submissionId){
+    alert('⚠️ هذه المقابلة تم إرسالها بالفعل.');
+    return;
+  }
+
+  // Create a unique ID for this interview
+  const submissionId =
+    'INT-' +
+    new Date().toISOString().replace(/[-:.TZ]/g,'') +
+    '-' +
+    Math.random().toString(36).substring(2,8).toUpperCase();
+
   const payload={
+    submissionId:submissionId,
     doctorName:state.doctorName,
     specialty:state.specialty,
-    submittedAt:new Date().toLocaleString('ar-EG'),
     answeredCount:answeredCount(),
-    completion:Math.round(answeredCount()/questions.length*100)
+    completion:Math.round(
+      answeredCount()/questions.length*100
+    )
   };
 
   questions.forEach((q,i)=>{
@@ -542,6 +557,7 @@ async function submitOnline(){
   btn.textContent='⏳ جارٍ الإرسال...';
 
   try{
+
     await fetch(GOOGLE_SCRIPT_URL,{
       method:'POST',
       mode:'no-cors',
@@ -551,14 +567,29 @@ async function submitOnline(){
       body:JSON.stringify(payload)
     });
 
-    alert('✅ تم إرسال نتيجة المقابلة بنجاح.');
+    // Save the submission ID locally
+    state.submissionId=submissionId;
+    persist();
+
+    btn.textContent='✅ تم الإرسال';
+    btn.disabled=true;
+
+    alert(
+      '✅ تم إرسال نتيجة المقابلة بنجاح.\n\n' +
+      'رقم المقابلة: ' + submissionId
+    );
 
   }catch(error){
+
     console.error(error);
-    alert('❌ تعذر إرسال النتيجة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');
-  }finally{
+
     btn.disabled=false;
     btn.textContent='☁️ إرسال النتيجة';
+
+    alert(
+      '❌ تعذر إرسال النتيجة.\n' +
+      'تأكد من اتصال الإنترنت ثم حاول مرة أخرى.'
+    );
   }
 }
 
