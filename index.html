@@ -484,12 +484,24 @@ function setupVoice(){
 
 function saved(){try{return JSON.parse(localStorage.getItem(SAVED))||[]}catch(e){return[]}}
 
+function saved(){
+  try{
+    return JSON.parse(localStorage.getItem(SAVED))||[];
+  }catch(e){
+    return[];
+  }
+}
+
 function saveNamed(){
   persist();
+
   const name=prompt(
     'اكتب اسمًا لحفظ هذا النموذج:',
-    state.doctorName ? state.doctorName+' - '+(state.specialty||'مقابلة') : ''
+    state.doctorName
+      ? state.doctorName+' - '+(state.specialty||'مقابلة')
+      : ''
   );
+
   if(!name)return;
 
   const all=saved();
@@ -502,6 +514,7 @@ function saveNamed(){
   });
 
   localStorage.setItem(SAVED,JSON.stringify(all));
+
   alert('تم حفظ النموذج بنجاح.');
 }
 
@@ -549,49 +562,7 @@ async function submitOnline(){
     btn.disabled=false;
     btn.textContent='☁️ إرسال النتيجة';
   }
-}async function submitOnline(){
-  persist();
-
-  const btn=$('submitOnlineBtn');
-
-  if(!state.doctorName.trim()){
-    alert('من فضلك أدخل اسم الدكتور أولًا.');
-    return;
-  }
-
-  const payload={
-    doctorName:state.doctorName,
-    specialty:state.specialty,
-    submittedAt:new Date().toLocaleString('ar-EG'),
-    answeredCount:answeredCount(),
-    completion:Math.round(answeredCount()/questions.length*100)
-  };
-
-  questions.forEach((q,i)=>{
-    payload['q'+(i+1)]=state.answers[i]||'';
-  });
-
-  btn.disabled=true;
-  btn.textContent='⏳ جارٍ الإرسال...';
-
-  try{
-    await fetch(GOOGLE_SCRIPT_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{
-        'Content-Type':'text/plain;charset=utf-8'
-      },
-      body:JSON.stringify(payload)
-    });
-
-    alert('✅ تم إرسال نتيجة المقابلة بنجاح.');
-
-  }catch(error){
-    console.error(error);
-    alert('❌ تعذر إرسال النتيجة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.');
-  }finally{
-    btn.disabled=false;
-    btn.textContent='☁️ إرسال النتيجة';
+}
   }
 }{persist();const name=prompt('اكتب اسمًا لحفظ هذا النموذج:',state.doctorName?state.doctorName+' - '+(state.specialty||'مقابلة'):'');if(!name)return;const all=saved();all.unshift({id:Date.now().toString(),name,date:new Date().toLocaleString('ar-EG'),data:JSON.parse(JSON.stringify(state))});localStorage.setItem(SAVED,JSON.stringify(all));alert('تم حفظ النموذج بنجاح.');}
 function openModal(){$('modalTitle').textContent='النماذج المحفوظة';const all=saved();$('modalBody').innerHTML=all.length?'<div class="saved-list">'+all.map(x=>{const n=Object.values(x.data.answers||{}).filter(v=>String(v).trim()).length;return `<div class="saved-card"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.data.doctorName||'بدون اسم')} — ${esc(x.data.specialty||'بدون تخصص')}<br>${esc(x.date)} · ${n}/${questions.length} إجابة</div></div><div class="actions"><button class="btn primary loadSaved" data-id="${x.id}">فتح</button><button class="btn danger delSaved" data-id="${x.id}">حذف</button></div></div>`;}).join('')+'</div>':'<p class="muted">لا توجد نماذج محفوظة بعد.</p>';$('modal').classList.add('show');document.querySelectorAll('.loadSaved').forEach(b=>b.onclick=()=>{const x=saved().find(z=>z.id===b.dataset.id);if(x){state=x.data;localStorage.setItem(ACTIVE,JSON.stringify(state));$('doctorName').value=state.doctorName||'';$('specialty').value=state.specialty||'';closeModal();startApp();}});document.querySelectorAll('.delSaved').forEach(b=>b.onclick=()=>{if(confirm('حذف النموذج؟')){localStorage.setItem(SAVED,JSON.stringify(saved().filter(x=>x.id!==b.dataset.id)));openModal();}});}
@@ -600,8 +571,7 @@ $('closeModal').onclick=closeModal;$('modal').onclick=e=>{if(e.target===$('modal
 function newForm(){if(!confirm('سيتم بدء نموذج جديد فارغ. احفظ الحالي أولًا إذا أردت الاحتفاظ به.'))return;state={doctorName:'',specialty:'',answers:{}};localStorage.removeItem(ACTIVE);$('doctorName').value='';$('specialty').value='';$('app').classList.remove('show');$('startScreen').classList.remove('hide');window.scrollTo({top:0,behavior:'smooth'});}
 function exportDoc(){persist();const rows=questions.map((q,i)=>`<div style="margin-bottom:18px"><h3>س${i+1} — ${esc(q.text)}</h3><p style="white-space:pre-wrap">${esc(state.answers[i]||'لم تتم الإجابة')}</p></div>`).join('');const doc=`<!doctype html><html dir="rtl"><meta charset="utf-8"><body style="font-family:Arial;direction:rtl;line-height:1.8"><h1>نموذج مقابلات الأطباء</h1><p><b>اسم الدكتور:</b> ${esc(state.doctorName||'-')}</p><p><b>التخصص:</b> ${esc(state.specialty||'-')}</p>${rows}</body></html>`;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([doc],{type:'application/msword;charset=utf-8'}));a.download='نموذج-'+(state.doctorName||'طبيب')+'.doc';a.click();}
 function startApp(){$('startScreen').classList.add('hide');$('app').classList.add('show');render();}
-$('startBtn').onclick=()=>{persist();startApp();};$('startBtn').onclick=()=>{persist();startApp();};
-$('submitOnlineBtn').onclick=submitOnline;$('openSavedStart').onclick=openModal;$('savedBtn').onclick=openModal;$('saveQuick').onclick=saveNamed;$('saveBottom').onclick=saveNamed;$('newBtn').onclick=newForm;$('wordBtn').onclick=exportDoc;$('pdfBtn').onclick=()=>{window.print();};$('excelBtn').onclick=exportCurrentExcel;$('mergeExcelBtn').onclick=exportAllSavedExcel;
+$('startBtn').onclick=()=>{persist();startApp();};$('submitOnlineBtn').onclick=submitOnline;$('openSavedStart').onclick=openModal;$('savedBtn').onclick=openModal;$('saveQuick').onclick=saveNamed;$('saveBottom').onclick=saveNamed;$('newBtn').onclick=newForm;$('wordBtn').onclick=exportDoc;$('pdfBtn').onclick=()=>{window.print();};$('excelBtn').onclick=exportCurrentExcel;$('mergeExcelBtn').onclick=exportAllSavedExcel;
 
 function xmlEsc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function excelXmlCell(value, type){
